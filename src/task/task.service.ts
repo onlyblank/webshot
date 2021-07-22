@@ -10,7 +10,7 @@ import css from './assets/style.css';
 @Injectable()
 export class TaskService {
   async render(task: RenderTaskDto): Promise<Buffer> {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
     const page = await browser.newPage();
 
     // Add html template.
