@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Header, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, Header, Post, UsePipes } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { RenderTaskDto } from './RenderTaskDto';
 import { ValidationPipe } from '@nestjs/common';
@@ -10,7 +10,7 @@ import { Readable } from 'stream';
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
-  @Get()
+  @Post()
   @UsePipes(new ValidationPipe({ transform: true }))
   async getTaskAsImage(@Body() task: RenderTaskDto, @Res() res: Response) {
     const buffer = await this.taskService.render(task);
@@ -26,12 +26,4 @@ export class TaskController {
 
     stream.pipe(res);
   }
-
-  /*
-  @Get('html')
-  @UsePipes(new ValidationPipe({ transform: true }))
-  async getTaskAsHTML(@Body() task: RenderTaskDto) {
-    return task;
-  }
-  */
 }
