@@ -1,2 +1,0 @@
-declare const _default: "<main>\n<div class=\"task\">\n\t<div class=\"task__question-wrapper\">\n\t\t<div class=\"task__question\">В результате выполнения фрагмента программы:</div>\n\t</div>\n\t<div class=\"task__code-editor-wrapper\">\n\t\t<div class=\"task__code-wrapper\"></div>\n\t</div>\n\t<div class=\"task__annotation-wrapper\">\n\t\t<div class=\"task__annotation\">Ass we can</div>\n\t</div>\n</div>\n</main>\n";
-export default _default;
