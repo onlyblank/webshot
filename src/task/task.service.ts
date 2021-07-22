@@ -62,17 +62,19 @@ export class TaskService {
       document.querySelector('.task__question').textContent = task.question;
       document.querySelector('.task__annotation').textContent = task.annotation;
 
-      const wrapper = document.querySelector('.task__code-wrapper');
+      if (task.code !== null) {
+        const wrapper = document.querySelector('.task__code-wrapper');
 
-      CodeMirror(wrapper, {
-        lineNumbers: true,
-        mode: 'text/x-csharp',
-        theme: 'dracula',
-        lineWrapping: true,
-        scrollbarStyle: 'null',
-        viewportMargin: Infinity,
-        value: task.code,
-      });
+        CodeMirror(wrapper, {
+          lineNumbers: true,
+          mode: 'text/x-csharp',
+          theme: 'dracula',
+          lineWrapping: true,
+          scrollbarStyle: 'null',
+          viewportMargin: Infinity,
+          value: task.code,
+        });
+      }
     }, task as unknown as puppeteer.JSONObject);
 
     // Get width and height of the task element.
