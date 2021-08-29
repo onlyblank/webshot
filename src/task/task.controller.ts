@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Header, Post, UsePipes } from '@nestjs/common';
+import { Body, Controller, Post, UsePipes } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { RenderTaskDto } from './RenderTaskDto';
 import { ValidationPipe } from '@nestjs/common';
