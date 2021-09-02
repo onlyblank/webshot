@@ -1,10 +1,10 @@
-import { IsString, ValidateIf } from 'class-validator';
+import { IsString, IsOptional } from 'class-validator';
 
 export class RenderTaskDto {
   @IsString()
   public question: string;
 
-  @ValidateIf((obj, value) => value !== null)
+  @IsOptional()
   @IsString()
   public code: string | null;
 
