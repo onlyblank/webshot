@@ -1,7 +1,11 @@
-import { Body, Controller, Post, UsePipes } from '@nestjs/common';
+import {
+  Controller,
+  Param,
+  ParseIntPipe,
+  Post,
+  UsePipes,
+} from '@nestjs/common';
 import { TaskService } from './task.service';
-import { RenderTaskDto } from './RenderTaskDto';
-import { ValidationPipe } from '@nestjs/common';
 import { Res } from '@nestjs/common';
 import { Response } from 'express';
 import { Readable } from 'stream';
@@ -10,10 +14,10 @@ import { Readable } from 'stream';
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
-  @Post()
-  @UsePipes(new ValidationPipe({ transform: true }))
-  async getTaskAsImage(@Body() task: RenderTaskDto, @Res() res: Response) {
-    const buffer = await this.taskService.render(task);
+  @Post(':id')
+  @UsePipes(ParseIntPipe)
+  async getTaskAsImage(@Param('id') id: number, @Res() res: Response) {
+    const buffer = await this.taskService.render(id);
 
     res.set({
       'Content-Type': 'image/png',

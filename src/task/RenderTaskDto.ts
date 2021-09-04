@@ -8,6 +8,7 @@ export class RenderTaskDto {
   @IsString()
   public code: string | null;
 
+  @IsOptional()
   @IsString()
-  public annotation: string;
+  public annotation?: string;
 }
