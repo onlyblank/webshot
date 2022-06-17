@@ -30,10 +30,10 @@
     "class-validator": "^0.13.1",
     "puppeteer": "^10.1.0",
     "reflect-metadata": "^0.1.13",
-    "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"
-  },
-  "devDependencies": {
+},
+"devDependencies": {
+	"rimraf": "^3.0.2",
     "@nestjs/cli": "^8.0.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.0.0",
