@@ -1,8 +1,8 @@
 {
-  "name": "nest-typescript-starter",
+  "name": "webshot",
   "private": true,
   "version": "1.0.0",
-  "description": "Nest TypeScript starter repository",
+  "description": "Webpage screenshot service",
   "license": "MIT",
   "engines": {
     "node": "v16.x"
