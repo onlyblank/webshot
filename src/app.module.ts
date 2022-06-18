@@ -3,7 +3,7 @@ import { AppService } from './app.service';
 import { TaskModule } from './task/task.module';
 
 @Module({
-  imports: [TaskModule],
-  providers: [AppService],
+    imports: [TaskModule],
+    providers: [AppService],
 })
 export class AppModule {}
