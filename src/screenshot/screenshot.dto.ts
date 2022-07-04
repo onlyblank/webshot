@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class ScreenshotDto {
     @ApiProperty({
@@ -7,6 +7,7 @@ export class ScreenshotDto {
         description: 'Page url to make screenshot.',
     })
     @IsString()
+    @IsNotEmpty()
     url: string;
 
     @ApiPropertyOptional({
