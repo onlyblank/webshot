@@ -3,8 +3,8 @@ import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class ScreenshotDto {
     @ApiProperty({
-        example: 'yourserver.com/item/3',
-        description: 'Page url to make screenshot.',
+        example: 'https://yourserver.com/page/3',
+        description: 'Page url to make screenshot. Should start with protocol',
     })
     @IsString()
     @IsNotEmpty()
