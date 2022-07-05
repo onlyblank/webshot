@@ -6,7 +6,10 @@ type Page = puppeteer.Page;
 
 @Injectable()
 export class ScreenshotService {
-    public async openBrowser(): Promise<Browser> {
+    private timoutMS = 5000;
+    private eventName = 'screenshotReady';
+
+    private async openBrowser(): Promise<Browser> {
         return puppeteer.launch({ args: ['--no-sandbox'] });
     }
 
@@ -25,21 +28,27 @@ export class ScreenshotService {
         ]);
     }
 
-    async waitForReadyEvent(page: Page) {
-        const eventName = 'screenshotReady';
-        const timeoutMS = 5000;
-
-        // Wait until page is ready or timout is reached.
-        new Promise((resolve, reject) => {
-            setTimeout(
-                () => reject(`${timeoutMS}ms time limit exceeded.`),
-                timeoutMS
-            );
-            page.evaluate(async () => {
-                return new Promise(res => {
-                    window.addEventListener(eventName, res);
-                });
-            }).then(() => resolve('Event fired'));
+    private async _openPage(url: string, waitForEvent: boolean): Promise<Page> {
+        const browser = await this.openBrowser();
+        const page = await browser.newPage();
+        await page.goto(url, {
+            waitUntil: 'domcontentloaded',
+            timeout: this.timoutMS,
         });
+        if (waitForEvent) {
+            await page.evaluate(async () => {
+                return new Promise(res => {
+                    window.addEventListener(this.eventName, res);
+                });
+            });
+        }
+        return page;
+    }
+
+    public async openPage(url: string, waitForEvent: boolean): Promise<Page> {
+        return this.rejectOnTimeout(
+            this._openPage(url, waitForEvent),
+            this.timoutMS
+        );
     }
 }
