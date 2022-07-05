@@ -1,8 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import * as puppeteer from 'puppeteer';
+import { ScreenshotOptions } from 'puppeteer';
+import { brotliCompress } from 'zlib';
 
 type Browser = puppeteer.Browser;
 type Page = puppeteer.Page;
+
+interface ScreenshotConfig {
+    selector?: string;
+}
 
 @Injectable()
 export class ScreenshotService {
@@ -50,5 +56,37 @@ export class ScreenshotService {
             this._openPage(url, waitForEvent),
             this.timoutMS
         );
+    }
+
+    public async screenshot(page: Page, config?: ScreenshotConfig) {
+        const options: ScreenshotOptions = {
+            type: 'png',
+            encoding: 'binary',
+        };
+
+        if (config && config.selector) {
+            // Get width and height of selected element.
+            const style = await page.$eval(
+                config.selector,
+                (el: HTMLElement) => {
+                    el.scrollIntoView();
+                    const rect = el.getBoundingClientRect();
+                    return {
+                        x: rect.x,
+                        y: rect.y,
+                        width: rect.width,
+                        height: rect.height,
+                    };
+                }
+            );
+
+            options.clip = style;
+        } else {
+            options.fullPage = true;
+        }
+
+        // TODO: close browser.
+        const buffer = (await page.screenshot(options)) as Buffer;
+        return buffer;
     }
 }
