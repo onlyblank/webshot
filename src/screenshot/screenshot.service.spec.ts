@@ -1,3 +1,4 @@
+import { TimeLimitExceededException } from './exceptions/time-limit-exceeded.exception';
 import { ScreenshotService } from './screenshot.service';
 
 describe('ScreenshotService', () => {
@@ -27,7 +28,7 @@ describe('ScreenshotService', () => {
 
             await expect(
                 screenshotService.rejectOnTimeout(promise, 25)
-            ).rejects.toMatch('time limit exceeded');
+            ).rejects.toThrowError(TimeLimitExceededException);
         });
     });
 });

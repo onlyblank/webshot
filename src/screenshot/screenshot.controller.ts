@@ -24,16 +24,10 @@ export class ScreenshotController {
         @Body() screenshotDto: ScreenshotDto,
         @Res({ passthrough: true }) res: Response
     ): Promise<StreamableFile> {
-        let page: Page;
-        try {
-            page = await this.screenshotService.openPage(
-                screenshotDto.url,
-                screenshotDto.waitForEvent
-            );
-        } catch (err) {
-            // TODO: verbose responses.
-            throw new BadRequestException(err);
-        }
+        const page: Page = await this.screenshotService.openPage(
+            screenshotDto.url,
+            screenshotDto.waitForEvent
+        );
 
         const buffer = await this.screenshotService.screenshot(page, {
             selector: screenshotDto.clipSelector,

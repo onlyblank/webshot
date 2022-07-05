@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadGatewayException, Injectable } from '@nestjs/common';
 import * as puppeteer from 'puppeteer';
 import { ScreenshotOptions } from 'puppeteer';
+import { TimeLimitExceededException } from './exceptions/time-limit-exceeded.exception';
 
 type Browser = puppeteer.Browser;
 type Page = puppeteer.Page;
@@ -25,7 +26,7 @@ export class ScreenshotService {
             promise,
             new Promise((_, reject) => {
                 setTimeout(
-                    () => reject(`${timeoutMS}ms time limit exceeded.`),
+                    () => reject(new TimeLimitExceededException(timeoutMS)),
                     timeoutMS
                 );
             }) as Promise<never>,
@@ -35,10 +36,14 @@ export class ScreenshotService {
     private async _openPage(url: string, waitForEvent?: string): Promise<Page> {
         const browser = await this.openBrowser();
         const page = await browser.newPage();
-        await page.goto(url, {
-            waitUntil: 'domcontentloaded',
-            timeout: this.timoutMS,
-        });
+        try {
+            await page.goto(url, {
+                waitUntil: 'domcontentloaded',
+                timeout: this.timoutMS,
+            });
+        } catch (err) {
+            throw new BadGatewayException(err);
+        }
         if (waitForEvent) {
             await page.evaluate(async () => {
                 return new Promise(res => {
@@ -64,9 +69,9 @@ export class ScreenshotService {
 
         if (config && config.selector) {
             // Get width and height of selected element.
-            const style = await page.$eval(
-                config.selector,
-                (el: HTMLElement) => {
+            let style;
+            try {
+                style = await page.$eval(config.selector, (el: HTMLElement) => {
                     el.scrollIntoView();
                     const rect = el.getBoundingClientRect();
                     return {
@@ -75,16 +80,20 @@ export class ScreenshotService {
                         width: rect.width,
                         height: rect.height,
                     };
-                }
-            );
+                });
+            } catch (err) {
+                throw new BadGatewayException(
+                    "Element wasn't found on specified selector."
+                );
+            }
 
             options.clip = style;
         } else {
             options.fullPage = true;
         }
 
-        // TODO: close browser.
         const buffer = (await page.screenshot(options)) as Buffer;
+        page.browser().close();
         return buffer;
     }
 }
