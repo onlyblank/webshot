@@ -2,6 +2,7 @@ import {
     BadRequestException,
     Body,
     Controller,
+    HttpCode,
     Post,
     Res,
     StreamableFile,
@@ -17,6 +18,7 @@ export class ScreenshotController {
     constructor(private screenshotService: ScreenshotService) {}
 
     @Post()
+    @HttpCode(200)
     @UsePipes(ValidationPipe)
     async main(
         @Body() screenshotDto: ScreenshotDto,
