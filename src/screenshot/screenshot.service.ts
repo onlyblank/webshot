@@ -10,10 +10,17 @@ export class ScreenshotService {
         return puppeteer.launch({ args: ['--no-sandbox'] });
     }
 
-    async openUrl(browser: Browser, url: string) {
-        const page = await browser.newPage();
-        await page.goto(url);
-        return page;
+    async rejectOnTimeout<R>(
+        callback: () => Promise<R>,
+        timeoutMS: number
+    ): Promise<R> {
+        return new Promise((resolve, reject) => {
+            setTimeout(
+                () => reject(`${timeoutMS}ms time limit exceeded.`),
+                timeoutMS
+            );
+            resolve(callback());
+        });
     }
 
     async waitForReadyEvent(page: Page) {
