@@ -26,7 +26,7 @@ export class ScreenshotController {
         try {
             page = await this.screenshotService.openPage(
                 screenshotDto.url,
-                screenshotDto.waitForEvent ?? false
+                screenshotDto.waitForEvent
             );
         } catch (err) {
             console.error(err);

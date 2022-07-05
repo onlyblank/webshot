@@ -28,7 +28,7 @@ describe('ScreenshotDto fields validation', () => {
         const value = makeScreenshotDto({
             url: 'someserver.com',
             clipSelector: '#root',
-            waitForEvent: true,
+            waitForEvent: 'DOMContentLoaded',
         });
         expectToBeValid(value);
     });
@@ -63,16 +63,23 @@ describe('ScreenshotDto fields validation', () => {
         expectToBeInvalid(value);
     });
 
-    it('should fail if waitForEvent is not a boolean', () => {
+    it('should fail if clipSelector is null', () => {
         const value = makeScreenshotDto({
-            clipSelector: 'string',
+            clipSelector: null,
+        });
+        expectToBeInvalid(value);
+    });
+
+    it('should fail if waitForEvent is not a string', () => {
+        const value = makeScreenshotDto({
+            waitForEvent: 123,
         });
         expectToBeInvalid(value);
     });
 
     it('should fail if waitForEvent is null', () => {
         const value = makeScreenshotDto({
-            clipSelector: null,
+            waitForEvent: null,
         });
         expectToBeInvalid(value);
     });

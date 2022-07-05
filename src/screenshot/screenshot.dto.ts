@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class ScreenshotDto {
     @ApiProperty({
@@ -20,9 +20,11 @@ export class ScreenshotDto {
 
     @ApiPropertyOptional({
         description:
-            'Will wait for special event to fire before creating a screenshot.',
+            'Will wait for sepecified event to fire before taking a screenshot.',
+        example: 'DOMContentLoaded',
     })
     @IsOptional()
-    @IsBoolean()
-    waitForEvent?: boolean;
+    @IsString()
+    @IsNotEmpty()
+    waitForEvent?: string;
 }

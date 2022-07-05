@@ -12,7 +12,6 @@ interface ScreenshotConfig {
 @Injectable()
 export class ScreenshotService {
     private timoutMS = 5000;
-    private eventName = 'screenshotReady';
 
     private async openBrowser(): Promise<Browser> {
         return puppeteer.launch({ args: ['--no-sandbox'] });
@@ -33,7 +32,7 @@ export class ScreenshotService {
         ]);
     }
 
-    private async _openPage(url: string, waitForEvent: boolean): Promise<Page> {
+    private async _openPage(url: string, waitForEvent?: string): Promise<Page> {
         const browser = await this.openBrowser();
         const page = await browser.newPage();
         await page.goto(url, {
@@ -43,14 +42,14 @@ export class ScreenshotService {
         if (waitForEvent) {
             await page.evaluate(async () => {
                 return new Promise(res => {
-                    window.addEventListener(this.eventName, res);
+                    window.addEventListener(waitForEvent, res);
                 });
             });
         }
         return page;
     }
 
-    public async openPage(url: string, waitForEvent: boolean): Promise<Page> {
+    public async openPage(url: string, waitForEvent?: string): Promise<Page> {
         return this.rejectOnTimeout(
             this._openPage(url, waitForEvent),
             this.timoutMS
