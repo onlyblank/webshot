@@ -11,16 +11,18 @@ export class ScreenshotService {
     }
 
     async rejectOnTimeout<R>(
-        callback: () => Promise<R>,
+        promise: Promise<R>,
         timeoutMS: number
     ): Promise<R> {
-        return new Promise((resolve, reject) => {
-            setTimeout(
-                () => reject(`${timeoutMS}ms time limit exceeded.`),
-                timeoutMS
-            );
-            resolve(callback());
-        });
+        return await Promise.race([
+            promise,
+            new Promise((_, reject) => {
+                setTimeout(
+                    () => reject(`${timeoutMS}ms time limit exceeded.`),
+                    timeoutMS
+                );
+            }) as Promise<never>,
+        ]);
     }
 
     async waitForReadyEvent(page: Page) {
