@@ -31,7 +31,7 @@ export class ScreenshotController {
                 screenshotDto.waitForEvent
             );
         } catch (err) {
-            console.error(err);
+            // TODO: verbose responses.
             throw new BadRequestException(err);
         }
 
