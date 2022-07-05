@@ -1,4 +1,4 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { ScreenshotController } from './screenshot.controller';
 import { ScreenshotService } from './screenshot.service';
 import * as request from 'supertest';

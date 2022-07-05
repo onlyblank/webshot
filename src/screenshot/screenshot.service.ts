@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as puppeteer from 'puppeteer';
 import { ScreenshotOptions } from 'puppeteer';
-import { brotliCompress } from 'zlib';
 
 type Browser = puppeteer.Browser;
 type Page = puppeteer.Page;
