@@ -45,9 +45,9 @@ export class ScreenshotService {
             throw new BadGatewayException(err);
         }
         if (waitForEvent) {
-            await page.evaluate(async waitForEvent => {
+            await page.evaluate(async event => {
                 return new Promise(res => {
-                    window.addEventListener(waitForEvent, res);
+                    window.addEventListener(event, res);
                 });
             }, waitForEvent);
         }
