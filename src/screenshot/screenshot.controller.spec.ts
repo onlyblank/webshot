@@ -90,5 +90,78 @@ describe('ScreenshotService', () => {
                 })
                 .catch(err => done(err));
         });
+
+        test('slow page', function () {
+            return request(app.getHttpServer())
+                .post('/screenshot')
+                .set('Content-Type', 'application/json')
+                .send({
+                    url: getHtmlPagePath('slow'),
+                    clipSelector: '.square',
+                })
+                .expect(408);
+        }, 8000);
+
+        it('should fail it element was not found on page', function () {
+            return request(app.getHttpServer())
+                .post('/screenshot')
+                .set('Content-Type', 'application/json')
+                .send({
+                    url: getHtmlPagePath('red-square-corner'),
+                    clipSelector: '.does-not-exist',
+                })
+                .expect(502);
+        });
+
+        it('should fail if page was not found on specified url', function () {
+            return request(app.getHttpServer())
+                .post('/screenshot')
+                .set('Content-Type', 'application/json')
+                .send({
+                    url: getHtmlPagePath('does-not-exist'),
+                })
+                .expect(502);
+        });
+
+        it('implicitly should wait for DOMContentLoaded event to raise', function (done) {
+            request(app.getHttpServer())
+                .post('/screenshot')
+                .set('Content-Type', 'application/json')
+                .send({
+                    url: getHtmlPagePath('1000ms'),
+                    clipSelector: '.square',
+                })
+                .expect(200)
+                .expect('Content-Type', /image/)
+                .then(res => {
+                    const buffer = res.body;
+                    //saveScreenshot("red-square", buffer);
+                    if (areBuffersEqual(buffer, getScreenshot('red-square')))
+                        done();
+                    else throw 'Buffers are not equal';
+                })
+                .catch(err => done(err));
+        }, 5200);
+
+        it('explicitly should wait for ElementRemoved event to raise', function (done) {
+            request(app.getHttpServer())
+                .post('/screenshot')
+                .set('Content-Type', 'application/json')
+                .send({
+                    url: getHtmlPagePath('custom-event'),
+                    clipSelector: '.square',
+                    waitForEvent: 'ElementRemoved',
+                })
+                .expect(200)
+                .expect('Content-Type', /image/)
+                .then(res => {
+                    const buffer = res.body;
+                    //saveScreenshot("red-square", buffer);
+                    if (areBuffersEqual(buffer, getScreenshot('red-square')))
+                        done();
+                    else throw 'Buffers are not equal';
+                })
+                .catch(err => done(err));
+        }, 5200);
     });
 });
