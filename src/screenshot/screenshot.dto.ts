@@ -20,7 +20,7 @@ export class ScreenshotDto {
 
     @ApiPropertyOptional({
         description:
-            'Will wait for sepecified window event to fire before taking a screenshot.',
+            'Will wait for sepecified window event to raise before taking a screenshot.',
         example: 'DOMContentLoaded',
     })
     @IsOptional()
