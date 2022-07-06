@@ -38,18 +38,18 @@ export class ScreenshotService {
         const page = await browser.newPage();
         try {
             await page.goto(url, {
-                waitUntil: 'domcontentloaded',
+                waitUntil: waitForEvent ? undefined : 'domcontentloaded',
                 timeout: this.timoutMS,
             });
         } catch (err) {
             throw new BadGatewayException(err);
         }
         if (waitForEvent) {
-            await page.evaluate(async () => {
+            await page.evaluate(async waitForEvent => {
                 return new Promise(res => {
                     window.addEventListener(waitForEvent, res);
                 });
-            });
+            }, waitForEvent);
         }
         return page;
     }
