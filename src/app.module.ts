@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AppService } from './app.service';
-import { TaskModule } from './task/task.module';
+import { ScreenshotModule } from './screenshot/screenshot.module';
 
 @Module({
-    imports: [TaskModule],
-    providers: [AppService],
+    imports: [ScreenshotModule],
 })
 export class AppModule {}
