@@ -1,6 +1,16 @@
-## Stage 1: Build the application
-FROM node:lts-buster as builder
+FROM node:lts-alpine
 WORKDIR /usr/app
+
+# Install puppeteer 
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont
+
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 # Install all dependencies
 COPY ["package.json", "package-lock.json*", "tsconfig*.json", "./"]
@@ -8,17 +18,11 @@ RUN npm install
 
 # Copy source files
 COPY ./src ./src
+
 # Build app
 ENV NODE_ENV=production
 RUN npm run build
 RUN npm prune --production
 
-## Stage 2: Run the app
-FROM node:lts-alpine as application
-WORKDIR /usr/app
-USER node
-
-COPY --from=builder /usr/app/dist ./dist
-COPY --from=builder /usr/app/node_modules ./node_modules
-
+# Run app
 CMD ["node", "dist/main"]
